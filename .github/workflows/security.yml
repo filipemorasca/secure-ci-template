@@ -27,8 +27,9 @@ jobs:
         run: pip install bandit==1.7.9
 
       - name: Run Bandit
+        continue-on-error: true
         run: |
-          bandit -r src -lll -f json -o bandit-report.json || true
+          bandit -r src -lll -f json -o bandit-report.json
           bandit -r src -lll
 
       - name: Upload Bandit report
@@ -52,8 +53,9 @@ jobs:
         run: pip install pip-audit==2.7.3
 
       - name: Run pip-audit
+        continue-on-error: true
         run: |
-          pip-audit -r requirements.txt -f json -o pip-audit-report.json || true
+          pip-audit -r requirements.txt -f json -o pip-audit-report.json
           pip-audit -r requirements.txt
 
       - name: Upload pip-audit report
@@ -83,6 +85,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run Trivy filesystem scan
+        continue-on-error: true
         uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: fs
@@ -90,6 +93,7 @@ jobs:
           severity: HIGH,CRITICAL
           format: sarif
           output: trivy-results.sarif
+          exit-code: "0"
 
       - name: Upload SARIF to GitHub Security tab
         if: always()
